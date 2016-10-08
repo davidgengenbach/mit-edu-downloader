@@ -1,0 +1,10 @@
+
+    if False:
+        sub_headlines = video_page.soup.select('h2.subhead')
+        for headline in sub_headlines:
+            if 'Free Downloads' in headline:
+                video_links = headline.parent.select('a')
+                video_link = video_links[1].attrs['href']
+                print("Downloading: {:<40}\n{}\n".format(lecture_title, video_link))
+                out_filename = helper.format_filename(lecture_title).lower()
+                helper.download_file("out/{}.mp4".format(out_filename), video_link)

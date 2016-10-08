@@ -2,6 +2,7 @@
 
 import sys
 import helper
+import re
 from urllib.parse import urlparse
 
 if len(sys.argv) < 2:
@@ -16,13 +17,18 @@ DOMAIN = "{uri.scheme}://{uri.netloc}".format(uri=urlparse(URL))
 
 lecture_links = page.soup.select('a.medialink')
 for index, lecture_link in enumerate(lecture_links):
+    lecture_title = lecture_link.string
     link = "{}/{}".format(DOMAIN, lecture_link.attrs['href'])
     video_page = browser.get(link)
-    sub_headlines = video_page.soup.select('h2.subhead')
-    for headline in sub_headlines:
-        if 'Free Downloads' in headline:
-            video_links = headline.parent.select('a')
-            video_link = video_links[1].attrs['href']
-            print(video_link)
-    #print(video_links)
-    #
+
+    script = [script for script in video_page.soup.select('script') if 'ocw_embed_chapter_media' in str(script)]
+    if len(script) < 1:
+        print(":(")
+        continue
+    youtube_url = re.findall(r'(https:\/\/www.youtube.com\/v\/.*?)\'', str(script[0]))
+    if len(youtube_url) < 1:
+        print(':((')
+        continue
+    youtube_url = youtube_url[0]
+    print("Downloading: {:<40}\n{}\n".format(lecture_title, youtube_url))
+
