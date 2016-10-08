@@ -30,5 +30,4 @@ for index, lecture_link in enumerate(lecture_links):
         print(':((')
         continue
     youtube_url = youtube_url[0]
-    print("Downloading: {:<40}\n{}\n".format(lecture_title, youtube_url))
-
+    print(youtube_url)
